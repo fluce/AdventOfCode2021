@@ -1,0 +1,17 @@
+<Project>
+
+  <ItemGroup>
+    <ProjectReference Include="..\aoclib\aoclib.csproj" Condition="'$(MSBuildProjectName)' != 'aoclib'" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType Condition="'$(MSBuildProjectName)' != 'aoclib'">Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="aoclib" />
+  </ItemGroup>
+</Project>
