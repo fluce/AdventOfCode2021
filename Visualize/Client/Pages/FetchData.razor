@@ -1,0 +1,81 @@
+﻿@page "/fetchdata"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Visualize.Shared
+@inject HttpClient Http
+
+@using Microsoft.AspNetCore.SignalR.Client
+@inject HubConnection HubConnection
+
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<p>last message : @message</p>
+
+<BECanvas Width="300" Height="400" @ref="_canvasReference" ></BECanvas>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    private string? message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+
+        HubConnection.On<string>("EventOccured", s =>
+        {
+            message = s;
+            StateHasChanged();
+        });
+    }
+
+    private Canvas2DContext _context;
+
+    protected BECanvasComponent _canvasReference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this._context = await this._canvasReference.CreateCanvas2DAsync();
+        await this._context.SetFillStyleAsync("red");
+
+        await this._context.FillRectAsync(10, 100, 100, 100);
+
+        await this._context.SetFontAsync("48px serif");
+        await this._context.FillTextAsync("Hello Blazor!!!", 10, 100);
+        await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 100);
+    }
+}
