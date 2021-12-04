@@ -14,9 +14,13 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-<p>last message : @message</p>
+<p><i class="fas fa-angle-right"></i>last message : @message</p>
 
-<BECanvas Width="300" Height="400" @ref="_canvasReference" ></BECanvas>
+<p><i class="fas fa-angle-right"></i>missed messages : @missed</p>
+
+<button @onclick="@OnNextStep">Next</button>
+
+<BECanvas Width="@width" Height="@height" @ref="_canvasReference" ></BECanvas>
 
 @if (forecasts == null)
 {
@@ -56,12 +60,25 @@ else
     {
         forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
 
-        HubConnection.On<string>("EventOccured", s =>
+        HubConnection.On<string>(nameof(IEventHub.EventOccured), s =>
         {
             message = s;
             StateHasChanged();
         });
+
+        HubConnection.On<GridData>(nameof(IEventHub.DisplayGrid), async d =>
+        {
+            _renderQueue.Enqueue(d);
+        });
+
     }
+
+    private int width=400;
+    private int height=400;
+
+    private int missed;
+
+    private Queue<GridData> _renderQueue = new Queue<GridData>();    
 
     private Canvas2DContext _context;
 
@@ -70,12 +87,59 @@ else
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         this._context = await this._canvasReference.CreateCanvas2DAsync();
+        await this._context.SetFontAsync("10px FontAwesome");
         await this._context.SetFillStyleAsync("red");
+        await this._context.SetTextAlignAsync(TextAlign.Center);
+        await this._context.SetTextBaselineAsync(TextBaseline.Middle);
 
-        await this._context.FillRectAsync(10, 100, 100, 100);
 
-        await this._context.SetFontAsync("48px serif");
-        await this._context.FillTextAsync("Hello Blazor!!!", 10, 100);
-        await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 100);
+        await this._context.FillTextAsync("\uF107",10,10);
+
+        /*        await this._context.SetFillStyleAsync("red");
+                * 
+                await this._context.FillRectAsync(10, 100, 100, 100);
+
+                await this._context.SetFontAsync("48px serif");
+                await this._context.FillTextAsync("Hello Blazor!!!", 10, 100);
+                await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 100);*/
+#pragma warning disable CS4014
+        Task.Run(async () =>
+#pragma warning restore CS4014
+        {
+            GridData? d = _renderQueue.Dequeue();
+            while (_renderQueue.Count > 10) { d = _renderQueue.Dequeue(); missed++; }
+            if (d != null)
+            {
+                double cellWidth = 12, cellHeight = 12;
+                double gapWidth = 2, gapHeight = 2;
+                double stepWidth = cellWidth + gapWidth;
+                double stepHeight = cellHeight + gapHeight;
+                width = (int)(d.Width * stepWidth);
+                height = (int)(20 + d.Height * stepHeight);
+
+
+                await this._context.BeginBatchAsync();
+                await this._context.SetFillStyleAsync("white");
+                await this._context.FillRectAsync(0, 20, d.Width * stepWidth, d.Height * stepHeight);
+                await this._context.SetFillStyleAsync("blue");
+                for (int i = 0; i < d.Width; i++)
+                    for (int j = 0; j < d.Height; j++)
+                        if (d.Data != null && d.Data[i][j])
+                            await this._context.FillRectAsync(i * stepWidth, 20+j * stepWidth, cellWidth, cellHeight);
+                await this._context.SetFillStyleAsync("white");
+                for (int i = 0; i < d.Width; i++)
+                    for (int j = 0; j < d.Height; j++)
+                        if (d.Data != null && d.Data[i][j])
+                            await this._context.FillTextAsync(Icons.AngleDown,i*stepWidth+cellWidth/2.0,20+j*stepHeight+cellHeight/2.0);
+                await this._context.EndBatchAsync();
+                StateHasChanged();
+            }
+
+        });
+    }
+
+    protected async Task OnNextStep(MouseEventArgs mouseEventArgs)
+    {
+        await HubConnection.SendAsync("Next");
     }
 }
