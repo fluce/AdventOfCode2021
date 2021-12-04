@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<BackgroundJob>();
+builder.Services.AddSingleton<NextHandler>();
 
 var app = builder.Build();
 
