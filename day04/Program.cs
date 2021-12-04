@@ -1,5 +1,7 @@
 ﻿var input=(await Helper.GetInput(4)).ToArray();
 
+await using var visu=await new Visualize.Server.Visualize().Build().Start();
+
 var (draws,rest)=input;
 var data=rest.ToArray();
 var n=data.Length/6;
@@ -27,6 +29,8 @@ foreach (var d in draws.Split(",").Select(x=>byte.Parse(x)))
 
 Console.WriteLine($"Bingo ! => {last.drawed} {last.g.Sum()} => {last.drawed*last.g.Sum()}");
 last.g.Print();
+
+Console.ReadLine();
 
 
 class Grid {

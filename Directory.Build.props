@@ -1,11 +1,12 @@
 <Project>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)\aoclib\aoclib.csproj" Condition="'$(MSBuildProjectName)' != 'aoclib'" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)\aoclib\aoclib.csproj" Condition="$(MSBuildProjectName) != 'aoclib'" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)\Visualize\Server\Visualize.Server.csproj" Condition="$(MSBuildProjectName.StartsWith('day'))" />
   </ItemGroup>
 
   <PropertyGroup>
-    <OutputType Condition="$(MSBuildProjectName.StartsWith('day'))">Exe</OutputType>
+    <!--<OutputType Condition="$(MSBuildProjectName.StartsWith('day'))">Exe</OutputType>-->
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

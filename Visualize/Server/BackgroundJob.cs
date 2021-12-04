@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Visualize.Server.Hubs;
 
-internal class BackgroundJob : BackgroundService
+public class BackgroundJob : BackgroundService
 {
     private readonly IHubContext<EventHub, IEventHub> hubContext;
     private readonly ILogger logger;
