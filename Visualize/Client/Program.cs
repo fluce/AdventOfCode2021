@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Visualize.Client;
+using Visualize.Shared;
+using SignalR.Strong;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,5 +19,11 @@ builder.Services.AddSingleton<HubConnection>(sp => {
       .WithAutomaticReconnect()
       .Build();
 });
+
+builder.Services.AddSingleton<ICSEventHub>(sp => {
+    var conn = sp.GetRequiredService<HubConnection>();
+    return conn.AsDynamicHub<ICSEventHub>();
+});
+
 
 await builder.Build().RunAsync();

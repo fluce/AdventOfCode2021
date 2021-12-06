@@ -22,6 +22,7 @@ public class Visualize: IAsyncDisposable
         builder.Services.AddRazorPages();
         builder.Services.AddSignalR();
         builder.Services.AddHostedService<BackgroundJob>();
+        builder.Services.AddSingleton<NextHandler>();
 
         build?.Invoke(builder);
 

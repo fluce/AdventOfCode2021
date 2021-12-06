@@ -21,7 +21,7 @@ public class NextHandler
 }
 
 
-public class EventHub: Hub<IEventHub>
+public class EventHub: Hub<ISCEventHub>, ICSEventHub
 {
     private readonly NextHandler nextHandler;
 

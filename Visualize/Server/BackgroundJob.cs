@@ -4,11 +4,11 @@ using Visualize.Shared;
 
 public class BackgroundJob : BackgroundService
 {
-    private readonly IHubContext<EventHub, IEventHub> hubContext;
+    private readonly IHubContext<EventHub, ISCEventHub> hubContext;
     private readonly NextHandler nextHandler;
     private readonly ILogger logger;
 
-    public BackgroundJob(IHubContext<EventHub, IEventHub> hubContext, NextHandler nextHandler, ILogger<BackgroundJob> logger)
+    public BackgroundJob(IHubContext<EventHub, ISCEventHub> hubContext, NextHandler nextHandler, ILogger<BackgroundJob> logger)
     {
         this.hubContext = hubContext;
         this.nextHandler = nextHandler;

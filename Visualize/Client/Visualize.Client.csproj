@@ -11,6 +11,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.0" />
 	  <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1"/>
+    <PackageReference Include="SignalR.Strong" Version="0.3.0" />
+    <PackageReference Include="SignalR.Strong.SourceGenerator" Version="0.3.0" />
+    <PackageReference Include="SignalR.Strong.Expressive" Version="0.3.0" />
+    <PackageReference Include="SignalR.Strong.Dynamic" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,5 +14,7 @@
 
   <ItemGroup>
     <Using Include="aoclib" />
+    <Using Include="System.Text.RegularExpressions" />
+    <Using Include="System.Collections.Concurrent" />
   </ItemGroup>
 </Project>
