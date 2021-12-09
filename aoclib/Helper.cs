@@ -10,8 +10,9 @@ public static class Helper
         return cli;
     }
 
-    public static async Task<IEnumerable<string>> GetInput(int day) 
+    public static async Task<IEnumerable<string>> GetInput(int day=0) 
     {
+        if (day==0) day=int.Parse(Regex.Match(Environment.GetCommandLineArgs()[0],@"day(?<day>\d+)").Groups["day"].Value);
         Stream stream;
         var filename=$".input-{day}";
         var cached=false;

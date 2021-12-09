@@ -1,4 +1,4 @@
-﻿var input=(await Helper.GetInput(6)).First().Split(',').Select(x=>int.Parse(x)).GroupBy(x=>x).ToDictionary(x=>x.Key,x=>(long)x.Count());
+﻿var input=(await Helper.GetInput()).First().Split(',').Select(x=>int.Parse(x)).GroupBy(x=>x).ToDictionary(x=>x.Key,x=>(long)x.Count());
 
 foreach(var d in input) Console.WriteLine($" {d.Key} = {d.Value}");
 
